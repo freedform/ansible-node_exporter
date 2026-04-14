@@ -1,0 +1,9 @@
+node_exporter_supported_actions:
+  - install
+  - state_control
+
+node_exporter_supported_states:
+  - started
+  - stopped
+  - restarted
+  - reloaded

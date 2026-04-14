@@ -1,0 +1,24 @@
+- name: Validate node_exporter_action_list
+  ansible.builtin.assert:
+    that:
+      - node_exporter_actions is defined
+      - node_exporter_actions is string
+      - node_exporter_actions | length > 0
+
+- name: Create node_exporter_action_list
+  ansible.builtin.set_fact:
+    node_exporter_action_list: "{{ node_exporter_actions.split(',') }}"
+
+- name: Validate node_exporter_action_list
+  ansible.builtin.assert:
+    that:
+      - node_exporter_action_list | length > 0
+      - node_exporter_action_list | difference(node_exporter_supported_actions) | length == 0
+
+- name: Install node_exporter
+  when: "'install' in node_exporter_action_list"
+  ansible.builtin.include_tasks: install.yml
+
+- name: Control node_exporter state
+  when: "'state_control' in node_exporter_action_list"
+  ansible.builtin.include_tasks: state_control.yml

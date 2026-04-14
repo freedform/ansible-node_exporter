@@ -1,0 +1,9 @@
+- name: Validate variables for state_control.yml task
+  ansible.builtin.assert:
+    that:
+      - node_exporter_state in node_exporter_supported_states
+
+- name: Manage node_exporter state
+  ansible.builtin.service:
+    name: node_exporter
+    state: "{{ node_exporter_state }}"
