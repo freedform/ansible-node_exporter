@@ -15,10 +15,8 @@
       - node_exporter_action_list | length > 0
       - node_exporter_action_list | difference(node_exporter_supported_actions) | length == 0
 
-- name: Install node_exporter
-  when: "'install' in node_exporter_action_list"
-  ansible.builtin.include_tasks: install.yml
-
-- name: Control node_exporter state
-  when: "'state_control' in node_exporter_action_list"
-  ansible.builtin.include_tasks: state_control.yml
+- name: Deploy Node Exporter
+  ansible.builtin.include_tasks: "{{ task_name }}.yml"
+  loop: "{{ node_exporter_action_list }}"
+  loop_control:
+    loop_var: task_name
