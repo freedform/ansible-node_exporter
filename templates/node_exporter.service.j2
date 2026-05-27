@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 User={{ node_exporter_user }}
-ExecStart=/usr/local/bin/node_exporter \
+ExecStart={{ node_exporter_bin_dir }}/node_exporter \
     --web.listen-address=:{{ node_exporter_port }}
 
 [Install]

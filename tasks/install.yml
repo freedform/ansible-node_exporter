@@ -1,3 +1,13 @@
+- name: Validate variables for install.yml task
+  ansible.builtin.assert:
+    that:
+      - node_exporter_version is defined
+      - node_exporter_download_url is defined
+      - node_exporter_download_dir is defined
+      - node_exporter_bin_dir is defined
+      - node_exporter_user is defined
+      - node_exporter_port is defined
+
 - name: Create user
   ansible.builtin.user:
     name: "{{ node_exporter_user }}"
@@ -40,6 +50,10 @@
     owner: root
     group: root
     mode: '0644'
+
+- name: Reload systemd daemon
+  ansible.builtin.systemd:
+    daemon_reload: true
 
 - name: Enable service
   ansible.builtin.service:

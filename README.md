@@ -1,6 +1,6 @@
 # node_exporter
 
-Role node_exported provides full control over Prometheus node exporter.
+Role node_exporter provides full control over Prometheus node exporter.
 
 ## Table of contents
 
@@ -45,7 +45,6 @@ Use comma without spaces as a delimiter for multiple actions.
 
 PATH directory for installed binary
 
-**_Required:_** `true`, only in case `node_exporter_actions: install`<br />
 **_Type:_** String<br />
 
 #### Default value
@@ -58,7 +57,6 @@ node_exporter_bin_dir: /usr/local/bin
 
 Base URL to download installation artifacts
 
-**_Required:_** `true`, only in case `node_exporter_actions: install`<br />
 **_Type:_** String<br />
 
 #### Default value
@@ -71,7 +69,6 @@ node_exporter_download_base: https://github.com/prometheus/node_exporter/release
 
 Destination directory for downloading node exporter binaries
 
-**_Required:_** `true`, only in case `node_exporter_actions: install`<br />
 **_Type:_** String<br />
 
 #### Default value
@@ -82,9 +79,8 @@ node_exporter_download_dir: /tmp
 
 ### node_exporter_port
 
-TPC port node exporter uses to expose collected metrics
+TCP port node exporter uses to expose collected metrics
 
-**_Required:_** `true`, only in case `node_exporter_actions: install`<br />
 **_Type:_** String<br />
 
 #### Default value
@@ -95,7 +91,7 @@ node_exporter_port: 9100
 
 ### node_exporter_state
 
-TPC port node exporter uses to expose collected metrics
+Target state for the node_exporter daemon
 
 **_Required:_** `true`, only in case `node_exporter_actions: state_control`<br />
 **_Type:_** String<br />
@@ -111,7 +107,6 @@ TPC port node exporter uses to expose collected metrics
 
 Linux user name to run node exporter service
 
-**_Required:_** `true`, only in case `node_exporter_actions: install`<br />
 **_Type:_** String<br />
 
 #### Default value
@@ -124,7 +119,6 @@ node_exporter_user: node-exporter
 
 Node exporter version to be installed
 
-**_Required:_** `true`, only in case `node_exporter_actions: install`<br />
 **_Type:_** String<br />
 
 #### Default value

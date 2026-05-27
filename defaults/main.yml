@@ -1,6 +1,6 @@
 # @var node_exporter_actions:description: >
 # List of actions the role does, accepts one or more actions.
-# Use comma without spaces as a delimiter for multiple actions. 
+# Use comma without spaces as a delimiter for multiple actions.
 # @var node_exporter_actions:required: `true`
 # @var node_exporter_actions:type: String
 # @var node_exporter_actions:example: >
@@ -8,7 +8,7 @@
 #   node_exporter_actions: install,state_control
 # @end
 
-# @var node_exporter_state:description: TPC port node exporter uses to expose collected metrics
+# @var node_exporter_state:description: Target state for the node_exporter daemon
 # @var node_exporter_state:type: String
 # @var node_exporter_state:required: `true`, only in case `node_exporter_actions: state_control`
 # @var node_exporter_state:example: >
@@ -18,36 +18,30 @@
 
 # @var node_exporter_version:description: Node exporter version to be installed
 # @var node_exporter_version:type: String
-# @var node_exporter_version:required: `true`, only in case `node_exporter_actions: install`
 # @end
 node_exporter_version: 1.10.2
 
 # @var node_exporter_download_base:description: Base URL to download installation artifacts
 # @var node_exporter_download_base:type: String
-# @var node_exporter_download_base:required: `true`, only in case `node_exporter_actions: install`
 # @end
 node_exporter_download_base: https://github.com/prometheus/node_exporter/releases/download
 
 # @var node_exporter_download_dir:description: Destination directory for downloading node exporter binaries
 # @var node_exporter_download_dir:type: String
-# @var node_exporter_download_dir:required: `true`, only in case `node_exporter_actions: install`
 # @end
 node_exporter_download_dir: /tmp
 
 # @var node_exporter_bin_dir:description: PATH directory for installed binary
 # @var node_exporter_bin_dir:type: String
-# @var node_exporter_bin_dir:required: `true`, only in case `node_exporter_actions: install`
 # @end
 node_exporter_bin_dir: /usr/local/bin
 
 # @var node_exporter_user:description: Linux user name to run node exporter service
 # @var node_exporter_user:type: String
-# @var node_exporter_user:required: `true`, only in case `node_exporter_actions: install`
 # @end
 node_exporter_user: node-exporter
 
-# @var node_exporter_port:description: TPC port node exporter uses to expose collected metrics
+# @var node_exporter_port:description: TCP port node exporter uses to expose collected metrics
 # @var node_exporter_port:type: String
-# @var node_exporter_port:required: `true`, only in case `node_exporter_actions: install`
 # @end
 node_exporter_port: 9100
