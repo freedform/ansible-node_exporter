@@ -1,0 +1,63 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Gather passwd database
+      ansible.builtin.getent:
+        database: passwd
+
+    - name: Assert node-exporter user exists
+      ansible.builtin.assert:
+        that: "'node-exporter' in ansible_facts.getent_passwd"
+        fail_msg: "node-exporter system user should exist"
+
+    - name: Stat node_exporter binary
+      ansible.builtin.stat:
+        path: /usr/local/bin/node_exporter
+      register: node_exporter_binary
+
+    - name: Assert node_exporter binary exists
+      ansible.builtin.assert:
+        that: node_exporter_binary.stat.exists
+        fail_msg: "/usr/local/bin/node_exporter should exist"
+
+    - name: Assert node_exporter binary has mode 0755
+      ansible.builtin.assert:
+        that: "node_exporter_binary.stat.mode == '0755'"
+        fail_msg: "/usr/local/bin/node_exporter should have mode 0755"
+
+    - name: Stat node_exporter systemd unit file
+      ansible.builtin.stat:
+        path: /etc/systemd/system/node_exporter.service
+      register: node_exporter_service_file
+
+    - name: Assert node_exporter service file exists
+      ansible.builtin.assert:
+        that: node_exporter_service_file.stat.exists
+        fail_msg: "/etc/systemd/system/node_exporter.service should exist"
+
+    - name: Assert node_exporter service file has mode 0644
+      ansible.builtin.assert:
+        that: "node_exporter_service_file.stat.mode == '0644'"
+        fail_msg: "/etc/systemd/system/node_exporter.service should have mode 0644"
+
+    - name: Gather service facts
+      ansible.builtin.service_facts:
+
+    - name: Assert node_exporter service is running
+      ansible.builtin.assert:
+        that: "ansible_facts.services['node_exporter.service'].state == 'running'"
+        fail_msg: "node_exporter.service should be running"
+
+    - name: Fetch node_exporter metrics endpoint
+      ansible.builtin.uri:
+        url: http://localhost:9100/metrics
+        status_code: 200
+        return_content: true
+      register: metrics_response
+
+    - name: Assert metrics endpoint contains node_exporter_build_info
+      ansible.builtin.assert:
+        that: "'node_exporter_build_info' in metrics_response.content"
+        fail_msg: "http://localhost:9100/metrics should contain node_exporter_build_info"
