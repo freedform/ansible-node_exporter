@@ -1,0 +1,9 @@
+---
+- name: Converge
+  hosts: all
+  gather_facts: true
+  roles:
+    - role: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') }}"
+      vars:
+        node_exporter_actions: install,state_control
+        node_exporter_state: started
