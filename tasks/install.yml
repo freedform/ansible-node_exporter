@@ -8,12 +8,6 @@
       - node_exporter_user is defined
       - node_exporter_port is defined
 
-- name: Create user
-  ansible.builtin.user:
-    name: "{{ node_exporter_user }}"
-    shell: /usr/sbin/nologin
-    system: true
-
 - name: Download node exporter
   ansible.builtin.get_url:
     url: "{{ node_exporter_download_url }}"

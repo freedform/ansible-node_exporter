@@ -3,6 +3,15 @@
   hosts: all
   gather_facts: true
   roles:
+    - role: linux_user
+      vars:
+        linux_user_actions: deploy_users
+        linux_user_list:
+          node-exporter:
+            state: present
+            shell: /usr/sbin/nologin
+            system: true
+
     - role: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') }}"
       vars:
         node_exporter_actions: install,state_control

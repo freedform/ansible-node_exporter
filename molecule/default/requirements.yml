@@ -1,0 +1,4 @@
+roles:
+  - name: linux_user
+    src: git@github.com:freedform/ansible-linux_user.git
+    scm: git
