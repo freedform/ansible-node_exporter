@@ -31,11 +31,13 @@
 
 - name: Delete installation artifacts
   ansible.builtin.file:
-    name: "{{ item }}"
+    name: "{{ artifact_path }}"
     state: absent
   loop:
     - "{{ node_exporter_download_dir }}/node_exporter.tar.gz"
     - "{{ node_exporter_download_dir }}/node_exporter-{{ node_exporter_version }}.linux-amd64"
+  loop_control:
+    loop_var: artifact_path
 
 - name: Create systemd service
   ansible.builtin.template:
