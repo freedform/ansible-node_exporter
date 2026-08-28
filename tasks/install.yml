@@ -8,6 +8,25 @@
       - node_exporter_user is defined
       - node_exporter_port is defined
 
+- name: Stat node_exporter binary
+  ansible.builtin.stat:
+    path: "{{ node_exporter_bin_dir }}/node_exporter"
+  register: node_exporter_binary_stat
+
+- name: Get installed node_exporter version
+  ansible.builtin.command: "{{ node_exporter_bin_dir }}/node_exporter --version"
+  register: node_exporter_installed_version
+  changed_when: false
+  failed_when: false
+  when: node_exporter_binary_stat.stat.exists
+
+- name: Determine whether node_exporter needs (re)installing
+  ansible.builtin.set_fact:
+    node_exporter_install_required: >-
+      {{ not node_exporter_binary_stat.stat.exists
+         or node_exporter_installed_version.rc != 0
+         or ('version ' + node_exporter_version + ' (') not in node_exporter_installed_version.stdout }}
+
 - name: Download node exporter
   ansible.builtin.get_url:
     url: "{{ node_exporter_download_url }}"
@@ -15,12 +34,14 @@
     owner: root
     group: root
     mode: '0644'
+  when: node_exporter_install_required
 
 - name: Extract
   ansible.builtin.unarchive:
     src: "{{ node_exporter_download_dir }}/node_exporter.tar.gz"
     dest: "{{ node_exporter_download_dir }}"
     remote_src: true
+  when: node_exporter_install_required
 
 - name: Install binary
   ansible.builtin.copy:
@@ -28,6 +49,7 @@
     dest: "{{ node_exporter_bin_dir }}/node_exporter"
     mode: "0755"
     remote_src: true
+  when: node_exporter_install_required
 
 - name: Delete installation artifacts
   ansible.builtin.file:
@@ -38,6 +60,7 @@
     - "{{ node_exporter_download_dir }}/node_exporter-{{ node_exporter_version }}.linux-amd64"
   loop_control:
     loop_var: artifact_path
+  when: node_exporter_install_required
 
 - name: Create systemd service
   ansible.builtin.template:
@@ -46,10 +69,12 @@
     owner: root
     group: root
     mode: '0644'
+  register: node_exporter_service_file
 
 - name: Reload systemd daemon
   ansible.builtin.systemd:
     daemon_reload: true
+  when: node_exporter_service_file is changed
 
 - name: Enable service
   ansible.builtin.service:
