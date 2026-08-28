@@ -1,0 +1,41 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Stat node_exporter binary
+      ansible.builtin.stat:
+        path: /usr/local/bin/node_exporter
+      register: node_exporter_binary
+
+    - name: Assert node_exporter binary is absent
+      ansible.builtin.assert:
+        that: not node_exporter_binary.stat.exists
+        fail_msg: "/usr/local/bin/node_exporter should not exist"
+
+    - name: Stat node_exporter systemd unit file
+      ansible.builtin.stat:
+        path: /etc/systemd/system/node_exporter.service
+      register: node_exporter_service_file
+
+    - name: Assert node_exporter service file is absent
+      ansible.builtin.assert:
+        that: not node_exporter_service_file.stat.exists
+        fail_msg: "/etc/systemd/system/node_exporter.service should not exist"
+
+    - name: Gather service facts
+      ansible.builtin.service_facts:
+
+    - name: Assert node_exporter service is no longer registered
+      ansible.builtin.assert:
+        that: "'node_exporter.service' not in ansible_facts.services"
+        fail_msg: "node_exporter.service should no longer be registered with systemd"
+
+    - name: Gather passwd database
+      ansible.builtin.getent:
+        database: passwd
+
+    - name: Assert node-exporter user still exists
+      ansible.builtin.assert:
+        that: "'node-exporter' in ansible_facts.getent_passwd"
+        fail_msg: "node-exporter system user should not be removed by this role"

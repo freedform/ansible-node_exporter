@@ -1,0 +1,31 @@
+- name: Validate variables for remove.yml task
+  ansible.builtin.assert:
+    that:
+      - node_exporter_bin_dir is defined
+
+- name: Check if node_exporter systemd unit exists
+  ansible.builtin.stat:
+    path: /etc/systemd/system/node_exporter.service
+  register: node_exporter_unit
+
+- name: Stop and disable node_exporter service
+  ansible.builtin.service:
+    name: node_exporter
+    state: stopped
+    enabled: false
+  when: node_exporter_unit.stat.exists
+
+- name: Remove node_exporter systemd unit file
+  ansible.builtin.file:
+    path: /etc/systemd/system/node_exporter.service
+    state: absent
+
+- name: Reload systemd daemon
+  ansible.builtin.systemd:
+    daemon_reload: true
+  when: node_exporter_unit.stat.exists
+
+- name: Remove node_exporter binary
+  ansible.builtin.file:
+    path: "{{ node_exporter_bin_dir }}/node_exporter"
+    state: absent

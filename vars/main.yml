@@ -1,6 +1,7 @@
 node_exporter_supported_actions:
   - install
   - state_control
+  - remove
 
 node_exporter_supported_states:
   - started
