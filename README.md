@@ -10,7 +10,7 @@ Role node_exporter provides full control over Prometheus node exporter.
   - [node_exporter_bin_dir](#node_exporter_bin_dir)
   - [node_exporter_download_base](#node_exporter_download_base)
   - [node_exporter_download_dir](#node_exporter_download_dir)
-  - [node_exporter_port](#node_exporter_port)
+  - [node_exporter_extra_flags](#node_exporter_extra_flags)
   - [node_exporter_state](#node_exporter_state)
   - [node_exporter_user](#node_exporter_user)
   - [node_exporter_version](#node_exporter_version)
@@ -77,16 +77,32 @@ Destination directory for downloading node exporter binaries
 node_exporter_download_dir: /tmp
 ```
 
-### node_exporter_port
+### node_exporter_extra_flags
 
-TCP port node exporter uses to expose collected metrics
+node_exporter command-line flags, keyed by flag name (without leading dashes). This is the
+single source for all flags passed to node_exporter, including which address it listens on
+(`web.listen-address`, defaults to `:9100` if not set here). Values set here are merged on
+top of the role's own defaults, so only the keys you want to change need to be set. A
+boolean value renders as `--flag` / `--no-flag` (for `--[no-]collector.*` style toggle
+flags); any other value renders as `--flag=value`.
 
-**_Type:_** String<br />
+**_Type:_** Dict<br />
 
 #### Default value
 
 ```YAML
-node_exporter_port: 9100
+node_exporter_extra_flags: {}
+```
+
+#### Example usage
+
+```YAML
+  node_exporter_extra_flags:
+    web.listen-address: ":9200"
+    web.telemetry-path: /metrics
+    collector.processes: true
+    collector.ntp: false
+    collector.textfile.directory: /var/lib/node_exporter/textfile_collector
 ```
 
 ### node_exporter_state

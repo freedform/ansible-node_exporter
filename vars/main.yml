@@ -10,3 +10,6 @@ node_exporter_supported_states:
   - reloaded
 
 node_exporter_download_url: "{{ node_exporter_download_base }}/v{{ node_exporter_version }}/node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz"
+
+node_exporter_default_flags:
+  web.listen-address: ":9100"

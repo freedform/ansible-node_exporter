@@ -50,9 +50,9 @@
         that: "ansible_facts.services['node_exporter.service'].state == 'running'"
         fail_msg: "node_exporter.service should be running"
 
-    - name: Fetch node_exporter metrics endpoint
+    - name: Fetch node_exporter metrics endpoint on custom telemetry path
       ansible.builtin.uri:
-        url: http://localhost:9100/metrics
+        url: http://localhost:9200/custom-metrics
         status_code: 200
         return_content: true
       register: metrics_response
@@ -60,4 +60,14 @@
     - name: Assert metrics endpoint contains node_exporter_build_info
       ansible.builtin.assert:
         that: "'node_exporter_build_info' in metrics_response.content"
-        fail_msg: "http://localhost:9100/metrics should contain node_exporter_build_info"
+        fail_msg: "http://localhost:9200/custom-metrics should contain node_exporter_build_info"
+
+    - name: Assert enabled processes collector metrics are exposed
+      ansible.builtin.assert:
+        that: "'node_processes_pids' in metrics_response.content"
+        fail_msg: "collector.processes flag should have enabled node_processes_pids metric"
+
+    - name: Assert disabled loadavg collector metrics are absent
+      ansible.builtin.assert:
+        that: "'node_load1 ' not in metrics_response.content"
+        fail_msg: "collector.loadavg flag should have disabled node_load1 metric"

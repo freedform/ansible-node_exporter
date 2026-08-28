@@ -16,3 +16,8 @@
       vars:
         node_exporter_actions: install,state_control
         node_exporter_state: started
+        node_exporter_extra_flags:
+          web.listen-address: ":9200"
+          web.telemetry-path: /custom-metrics
+          collector.processes: true
+          collector.loadavg: false

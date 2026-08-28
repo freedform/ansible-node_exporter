@@ -6,7 +6,6 @@
       - node_exporter_download_dir is defined
       - node_exporter_bin_dir is defined
       - node_exporter_user is defined
-      - node_exporter_port is defined
 
 - name: Stat node_exporter binary
   ansible.builtin.stat:

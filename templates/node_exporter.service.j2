@@ -4,8 +4,16 @@ After=network.target
 
 [Service]
 User={{ node_exporter_user }}
+{% set node_exporter_flags = [] %}
+{% for flag_name, flag_value in (node_exporter_default_flags | combine(node_exporter_extra_flags)).items() %}
+{% if flag_value is boolean %}
+{% set _ = node_exporter_flags.append('--' ~ (flag_name if flag_value else 'no-' ~ flag_name)) %}
+{% else %}
+{% set _ = node_exporter_flags.append('--' ~ flag_name ~ '=' ~ flag_value) %}
+{% endif %}
+{% endfor %}
 ExecStart={{ node_exporter_bin_dir }}/node_exporter \
-    --web.listen-address=:{{ node_exporter_port }}
+    {{ node_exporter_flags | join(' \\\n    ') }}
 
 [Install]
 WantedBy=multi-user.target
