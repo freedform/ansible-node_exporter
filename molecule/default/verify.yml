@@ -71,3 +71,27 @@
       ansible.builtin.assert:
         that: "'node_load1 ' not in metrics_response.content"
         fail_msg: "collector.loadavg flag should have disabled node_load1 metric"
+
+    - name: Stat node_exporter textfile collector directory
+      ansible.builtin.stat:
+        path: /var/lib/node_exporter/textfile_collector
+      register: node_exporter_textfile_dir
+
+    - name: Assert textfile collector directory exists with correct ownership
+      ansible.builtin.assert:
+        that:
+          - node_exporter_textfile_dir.stat.exists
+          - node_exporter_textfile_dir.stat.isdir
+          - node_exporter_textfile_dir.stat.pw_name == 'node-exporter'
+          - node_exporter_textfile_dir.stat.mode == '0755'
+        fail_msg: "/var/lib/node_exporter/textfile_collector should exist, owned by node-exporter, mode 0755"
+
+    - name: Assert textfile collector metric is exposed
+      ansible.builtin.assert:
+        that: "'my_batch_job_last_run_seconds 1.7564256e' in metrics_response.content"
+        fail_msg: "textfile collector should expose my_batch_job_last_run_seconds from batch.prom"
+
+    - name: Assert textfile collector mtime metric is exposed
+      ansible.builtin.assert:
+        that: "'node_textfile_mtime_seconds{file=\"/var/lib/node_exporter/textfile_collector/batch.prom\"}' in metrics_response.content"
+        fail_msg: "textfile collector should expose node_textfile_mtime_seconds for batch.prom"

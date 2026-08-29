@@ -12,6 +12,7 @@ Role node_exporter provides full control over Prometheus node exporter.
   - [node_exporter_download_dir](#node_exporter_download_dir)
   - [node_exporter_extra_flags](#node_exporter_extra_flags)
   - [node_exporter_state](#node_exporter_state)
+  - [node_exporter_textfile_directory](#node_exporter_textfile_directory)
   - [node_exporter_user](#node_exporter_user)
   - [node_exporter_version](#node_exporter_version)
 - [Dependencies](#dependencies)
@@ -81,10 +82,11 @@ node_exporter_download_dir: /tmp
 
 node_exporter command-line flags, keyed by flag name (without leading dashes). This is the
 single source for all flags passed to node_exporter, including which address it listens on
-(`web.listen-address`, defaults to `:9100` if not set here). Values set here are merged on
-top of the role's own defaults, so only the keys you want to change need to be set. A
-boolean value renders as `--flag` / `--no-flag` (for `--[no-]collector.*` style toggle
-flags); any other value renders as `--flag=value`.
+(`web.listen-address`, defaults to `:9100` if not set here) and the textfile collector
+directory (`collector.textfile.directory`, defaults to `node_exporter_textfile_directory`).
+Values set here are merged on top of the role's own defaults, so only the keys you want to
+change need to be set. A boolean value renders as `--flag` / `--no-flag` (for
+`--[no-]collector.*` style toggle flags); any other value renders as `--flag=value`.
 
 **_Type:_** Dict<br />
 
@@ -117,6 +119,20 @@ Target state for the node_exporter daemon
 ```YAML
   node_exporter_state: started
   node_exporter_state: restarted
+```
+
+### node_exporter_textfile_directory
+
+Directory node_exporter scans for `*.prom` files exposing metrics from cron jobs/scripts
+(the textfile collector). The role creates this directory, owned by `node_exporter_user`,
+and wires `--collector.textfile.directory` to it automatically.
+
+**_Type:_** String<br />
+
+#### Default value
+
+```YAML
+node_exporter_textfile_directory: /var/lib/node_exporter/textfile_collector
 ```
 
 ### node_exporter_user

@@ -41,13 +41,22 @@ node_exporter_bin_dir: /usr/local/bin
 # @end
 node_exporter_user: node-exporter
 
+# @var node_exporter_textfile_directory:description: >
+# Directory node_exporter scans for `*.prom` files exposing metrics from cron jobs/scripts
+# (the textfile collector). The role creates this directory, owned by `node_exporter_user`,
+# and wires `--collector.textfile.directory` to it automatically.
+# @var node_exporter_textfile_directory:type: String
+# @end
+node_exporter_textfile_directory: /var/lib/node_exporter/textfile_collector
+
 # @var node_exporter_extra_flags:description: >
 # node_exporter command-line flags, keyed by flag name (without leading dashes). This is the
 # single source for all flags passed to node_exporter, including which address it listens on
-# (`web.listen-address`, defaults to `:9100` if not set here). Values set here are merged on
-# top of the role's own defaults, so only the keys you want to change need to be set. A
-# boolean value renders as `--flag` / `--no-flag` (for `--[no-]collector.*` style toggle
-# flags); any other value renders as `--flag=value`.
+# (`web.listen-address`, defaults to `:9100` if not set here) and the textfile collector
+# directory (`collector.textfile.directory`, defaults to `node_exporter_textfile_directory`).
+# Values set here are merged on top of the role's own defaults, so only the keys you want to
+# change need to be set. A boolean value renders as `--flag` / `--no-flag` (for
+# `--[no-]collector.*` style toggle flags); any other value renders as `--flag=value`.
 # @var node_exporter_extra_flags:type: Dict
 # @var node_exporter_extra_flags:example: >
 #   node_exporter_extra_flags:

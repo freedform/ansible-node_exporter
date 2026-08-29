@@ -21,3 +21,12 @@
           web.telemetry-path: /custom-metrics
           collector.processes: true
           collector.loadavg: false
+
+  tasks:
+    - name: Write a sample textfile collector metric
+      ansible.builtin.copy:
+        content: "my_batch_job_last_run_seconds 1756425600\n"
+        dest: /var/lib/node_exporter/textfile_collector/batch.prom
+        owner: node-exporter
+        group: node-exporter
+        mode: '0644'

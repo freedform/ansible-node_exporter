@@ -13,3 +13,4 @@ node_exporter_download_url: "{{ node_exporter_download_base }}/v{{ node_exporter
 
 node_exporter_default_flags:
   web.listen-address: ":9100"
+  collector.textfile.directory: "{{ node_exporter_textfile_directory }}"
